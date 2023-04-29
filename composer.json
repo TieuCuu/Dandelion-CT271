@@ -1,0 +1,14 @@
+{
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "gregwar/captcha": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "CT271\\": "CT271/"
+        },
+        "files": [
+            "bootstrap.php"
+        ]
+    }
+}

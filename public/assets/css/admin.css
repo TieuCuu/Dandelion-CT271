@@ -1,0 +1,17 @@
+.sidebar-brand {
+    text-align: center;
+}
+
+.sidebar-avatar {
+    height: 50px;
+
+}
+
+.sidebar-category li:hover {
+    background-color: #ebf8f1 !important;
+
+}
+
+.sidebar-category li:hover a {
+    color: #00a850 !important;
+}
