@@ -12,7 +12,7 @@ class ProductModel extends ConnectDB
 
     public function GetProductByID($id)
     {
-        $sql = "SELECT * FROM PRODUCTS WHERE ProductID = ?";
+        $sql = "SELECT P.*, U.UnitName FROM PRODUCTS P INNER JOIN UNITS U ON P.UnitID = U.UnitID WHERE P.ProductID = ?";
         $stmt = $this->PDO->prepare($sql);
         if ($stmt->execute([$id]) && $stmt->rowCount() > 0) {
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);

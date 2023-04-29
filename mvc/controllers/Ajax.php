@@ -41,7 +41,8 @@ class Ajax extends Controller
 
         if ($count_products > 0) {
             foreach ($products as $product) {
-                //print_r($product['ProductName']);
+                // var_dump($product['ProductName']);
+
                 $display .= '
                 <div class="col">
                 <div class="card mb-5 border-0 rounded-3">
@@ -60,8 +61,7 @@ class Ajax extends Controller
                             <div class="text-center">
                                 <p class="m-0">
                                     <span class="fw-bold">$' . $product['ProductPrice'] . '</span>
-                                    /
-                                    <span class="text-muted">500g</span>
+                                    
                                 </p>
                             </div>
                             <div class="product__rating-block d-flex justify-content-between align-items-center py-2">

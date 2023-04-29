@@ -21,6 +21,7 @@ class Product extends Controller
         $ProductIDRegex = "/^SP0*[0-9]{3,}$/";
         if (preg_match($ProductIDRegex, $id)) {
             $data = json_decode($this->ProductModel->GetProductByID($id));
+            // var_dump($data[0]->UnitName);
             if (!empty($data)) {
                 $this->view("master1", ["page" => "detail", "data" => $data]);
             } else {

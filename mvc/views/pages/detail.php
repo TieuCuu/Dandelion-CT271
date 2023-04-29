@@ -76,14 +76,18 @@
 
                         <div class="d-flex flex-column">
                             <div class="product__detail-boxprice d-flex align-items-center mb-4">
-                                <h4 class="me-3">Price:</h4>
+                                <h4 class="m-0 me-3">Price:</h4>
                                 <div class="d-flex align-items-center justify-content-around">
                                     <strong><?php echo "$" . htmlspecialchars(round($data["data"][0]->ProductPrice, 1)); ?></strong>
                                     <span><?php echo "$" . htmlspecialchars(intval($data["data"][0]->ProductPrice * 1.5)); ?></span>
                                 </div>
                             </div>
+                            <div class=" d-flex align-items-center mb-4">
+                                <h4 class="m-0 me-3">Unit:</h4>
+                                <div><?php echo htmlspecialchars($data["data"][0]->ProductWeight) . " " . htmlspecialchars($data["data"][0]->UnitName) ?></div>
+                            </div>
                             <div class="d-flex align-items-center mb-4">
-                                <h4 class="me-3">Transport:</h4>
+                                <h4 class="m-0 me-3">Transport:</h4>
                                 <form action="" class="row g-3 align-items-center">
                                     <div class="col-auto">
                                         <select id="province" name="provinces" class="form-select form-select-sm " required="">
@@ -105,7 +109,7 @@
                                 </form>
                             </div>
                             <div class="d-flex align-items-center mb-4">
-                                <h4 class="me-3">Quantity:</h4>
+                                <h4 class="m-0 me-3">Quantity:</h4>
                                 <input name="quantity" class="shadow-none" type="number" value="1" min="1" max="<?php echo htmlspecialchars($data["data"][0]->ProductQuantity); ?>" <?php if ($data["data"][0]->ProductQuantity == 0) echo 'disabled' ?> step="1" />
                             </div>
                             <div class="d-flex align-items-center">
