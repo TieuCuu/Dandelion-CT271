@@ -1,7 +1,8 @@
 <?php
 
-if (isset($data['data']['categoryRows'])) {
+if (isset($data['data']['categoryRows']) && isset($data['data']['unitRows'])) {
     $categories = $data['data']['categoryRows'];
+    $units = $data['data']['unitRows'];
 }
 
 
@@ -12,21 +13,43 @@ if (isset($data['data']['categoryRows'])) {
     <h1 class="mt-4 pb-2 border-bottom">Add Product</h1>
 
     <form action="" id="add" method="POST" enctype="multipart/form-data" class="row g-3">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label for="name" class="form-label fw-bold">Name</label>
             <input type="text" name="name" value="<?php echo $_POST["name"] ?? "" ?>" id="name" class="form-control form-control input-color " required>
             <div class="text-danger" id="nameErr" style="font-size: 0.8rem; ">
                 <?php echo $data['errors']['nameErr'] ?? "" ?>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label for="price" class="form-label fw-bold">Price</label>
             <input type="number" name="price" value="<?php echo $_POST["price"] ?? "" ?>" id="price" min="0" step="0.01" class="form-control form-control input-color " required>
             <div class="text-danger" id="priceErr" style="font-size: 0.8rem;">
                 <?php echo $data['errors']['priceErr'] ?? "" ?>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <label for="weight" class="form-label fw-bold">Weight</label>
+            <input type="number" name="weight" value="<?php echo $_POST["weight"] ?? "" ?>" id="weight" min="1" step="1" class="form-control form-control input-color " required>
+            <div class="text-danger" id="weightErr" style="font-size: 0.8rem;">
+                <?php echo $data['errors']['weightErr'] ?? "" ?>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label for="unit" class="form-label fw-bold">Unit</label>
+            <select class="form-select" id="selectUnit">
+                <?php
+                foreach ($units as $unit) {
+                ?>
+                    <option <?php if (isset($_POST["unit"]) && $_POST["unit"] == $unit['UNITID']) echo "selected"; ?> value="<?php echo $unit['UNITID'] ?>"><?php echo $unit['UNITNAME'] ?></option>
+                <?php } ?>
+            </select>
+            <input type="text" name="unit" value="<?php if (isset($_POST["unit"])) echo $_POST["unit"];
+                                                    else echo $units[0]['UNITID']; ?>" id="unit" class="form-control form-control input-color d-none" required>
+            <div class="text-danger" id="unitErr" style="font-size: 0.8rem;">
+                <?php echo $data['errors']['unitErr'] ?? "" ?>
+            </div>
+        </div>
+        <div class="col-md-2">
             <label for="category" class="form-label fw-bold">Category</label>
             <select class="form-select" id="selectCate">
                 <?php
@@ -41,7 +64,7 @@ if (isset($data['data']['categoryRows'])) {
                 <?php echo $data['errors']['cateErr'] ?? "" ?>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label for="quantity" class="form-label fw-bold">Quantity</label>
             <input type="number" name="quantity" value="<?php echo $_POST["quantity"] ?? "" ?>" min="0" id="quantity" class="form-control form-control input-color " required>
             <div class="text-danger" id="quantityErr" style="font-size: 0.8rem;">
@@ -118,6 +141,11 @@ if (isset($data['data']['categoryRows'])) {
         $('select#selectCate').change(function() {
             let value = $(this).val().trim();
             $('#category').val(value);
+        })
+
+        $('select#selectUnit').change(function() {
+            let value = $(this).val().trim();
+            $('#unit').val(value);
         })
     })
 

@@ -63,14 +63,17 @@ class Admin extends Controller
     public function NewProduct()
     {
         $categoryRows = $this->ProductModel->GetRows("SELECT CATEGORYID, CATEGORYNAME FROM CATEGORIES");
+        $unitRows =  $this->ProductModel->GetRows("SELECT UNITID, UNITNAME FROM UNITS");
 
-        $data = ['categoryRows' => $categoryRows];
+        $data = ['categoryRows' => $categoryRows, 'unitRows' => $unitRows];
 
         // echo $_POST["information"];
         //print_r($_FILES["fileUpload"]);
         $errors = [];
         $nameErr = '';
         $priceErr = '';
+        $weightErr = '';
+        $unitErr = '';
         $cateErr = '';
         $quantityErr = '';
         $imgErr = '';
@@ -78,11 +81,6 @@ class Admin extends Controller
         $descErr = '';
         $infoErr = '';
         $msgResult = ["msg" => "", "isSuccess" => false];
-
-        $categoryRows = $this->ProductModel->GetRows("SELECT CATEGORYID, CATEGORYNAME FROM CATEGORIES");
-
-        $data = ['categoryRows' => $categoryRows];
-
 
         if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST["submit_add"])) {
 
@@ -99,10 +97,33 @@ class Admin extends Controller
 
             if (isset($_POST["price"]) && !empty($_POST["price"])) {
                 if ($_POST["price"] >= 0) {
-                    $price = $_POST["price"];
+                    $price = floatval($_POST["price"]);
                 } else {
                     $priceErr .= 'Invalid Price!';
                     $errors['priceErr'] = $priceErr;
+                }
+            }
+
+            if (isset($_POST["weight"]) && !empty($_POST["weight"])) {
+                if ($_POST["weight"] >= 0) {
+                    $weight = intval($_POST["weight"]);
+                } else {
+                    $weightErr .= 'Invalid Weight!';
+                    $errors['weightErr'] = $weightErr;
+                }
+            }
+
+            if (isset($_POST["unit"]) && !empty($_POST["unit"])) {
+                $unitArr = [];
+                foreach ($unitRows as $unitRow) {
+                    array_push($unitArr, $unitRow["UNITID"]);
+                }
+
+                if (in_array($_POST["unit"], $unitArr)) {
+                    $unit = $_POST["unit"];
+                } else {
+                    $unitErr .= 'Invalid unit!';
+                    $errors['unitErr'] = $unitErr;
                 }
             }
 
@@ -194,16 +215,19 @@ class Admin extends Controller
                 }
             }
 
+            var_dump($weight, $unit);
+
             if (!array_filter($errors) && !$hasErrors) {
                 //echo json_encode('thuc hien chen');
                 $result = $this->ProductModel->AddProduct(
-                    "INSERT INTO PRODUCTS(CategoryID, ProductName, ProductImg, ProductShortDesc, ProductInfo, ProductPrice, ProductQuantity) VALUES (?, ?, ?, ?, ?, ? ,?)",
-                    [$category, $name, $img, $desc, $info, $price, $quantity]
+                    "INSERT INTO PRODUCTS(CategoryID, ProductWeight, UnitID, ProductName, ProductImg, ProductShortDesc, ProductInfo, ProductPrice, ProductQuantity) VALUES (?, ?, ?, ?, ?, ?, ?, ? ,?)",
+                    [$category, $weight, $unit, $name, $img, $desc, $info, $price, $quantity]
                 );
                 if ($result) {
                     $msgResult["msg"] = stackMessageWrapper([showMessage("success", "Product added successfully!")]);
                     $msgResult["isSuccess"] = true;
                 } else {
+
                     $msgResult["msg"] = stackMessageWrapper([showMessage("error", "Failed to add new product, please try again!")]);
                 }
             } else {

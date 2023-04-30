@@ -1,6 +1,7 @@
 <?php
 
 $categories = $data['data']['categoryRows'];
+$units = $data['data']['unitRows'];
 
 if (empty($data["data"]["resultError"])) {
 
@@ -27,21 +28,42 @@ if (empty($data["data"]["resultError"])) {
     <h1 class="mt-4 pb-2 border-bottom">Edit Product</h1>
 
     <form action="" id="edit" method="POST" enctype="multipart/form-data" class="row g-3">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label for="name" class="form-label fw-bold">Name</label>
             <input type="text" name="name" value="<?php echo htmlspecialchars($ProductName) ?? $nameErr = 'Error' ?>" id="name" class="form-control form-control input-color " required>
             <div class="text-danger" style="font-size: 0.8rem;">
                 <?php echo $nameErr ?? ''; ?>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label for="price" class="form-label fw-bold">Price</label>
             <input type="number" name="price" value="<?php echo htmlspecialchars($ProductPrice) ?? $priceErr = 'Error' ?>" id="price" min="0" step="0.01" class="form-control form-control input-color " required>
             <div class="text-danger" style="font-size: 0.8rem;">
                 <?php echo $priceErr ?? ''; ?>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <label for="weight" class="form-label fw-bold">Weight</label>
+            <input type="number" name="weight" value="<?php echo htmlspecialchars($ProductWeight) ?? $weightErr = 'Error' ?>" id="weight" min="1" step="1" class="form-control form-control input-color " required>
+            <div class="text-danger" id="weightErr" style="font-size: 0.8rem;">
+                <?php echo $weightErr ?? '' ?>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label for="unit" class="form-label fw-bold">Unit</label>
+            <select class="form-select" id="selectUnit">
+                <?php
+                foreach ($units as $unit) {
+                ?>
+                    <option <?php echo $unit['UNITID'] == $UnitID ? 'selected' : '' ?> value="<?php echo htmlspecialchars($unit['UNITID']) ?>"><?php echo htmlspecialchars($unit['UNITNAME']) ?></option>
+                <?php } ?>
+            </select>
+            <input type="text" name="unit" value="<?php echo htmlspecialchars($UnitID) ?? $unitErr = 'Error' ?>" id="unit" class="form-control form-control input-color d-none" required>
+            <div class="text-danger" id="unitErr" style="font-size: 0.8rem;">
+                <?php echo $unitErr ?? ''; ?>
+            </div>
+        </div>
+        <div class="col-md-2">
             <label for="category" class="form-label fw-bold">Category</label>
             <select class="form-select" id="selectCate">
                 <?php
@@ -55,7 +77,7 @@ if (empty($data["data"]["resultError"])) {
                 <?php echo $categoryErr ?? ''; ?>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label for="quantity" class="form-label fw-bold">Quantity</label>
             <input type="number" name="quantity" value="<?php echo htmlspecialchars($ProductQuantity) ?? $quantityErr = 'Error' ?>" min="0" id="quantity" class="form-control form-control input-color " required>
             <div class="text-danger" style="font-size: 0.8rem;">
