@@ -1,14 +1,18 @@
 <?php
 
-$categories = $data['data']['categoryRows'];
-$units = $data['data']['unitRows'];
+if (isset($data['data']['categoryRows']) && isset($data['data']['unitRows'])) {
+    $categories = $data['data']['categoryRows'];
+    $units = $data['data']['unitRows'];
+}
+
 
 if (empty($data["data"]["resultError"])) {
-
     $arr = $data["data"]["row"];
     foreach ($arr as $obj) {
         $ProductID = $obj->ProductID;
         $ProductName = $obj->ProductName;
+        $ProductWeight = $obj->ProductWeight;
+        $UnitID = $obj->UnitID;
         $CategoryID = $obj->CategoryID;
         $ProductPrice = $obj->ProductPrice;
         $ProductQuantity = $obj->ProductQuantity;
@@ -112,7 +116,7 @@ if (empty($data["data"]["resultError"])) {
             <label for="confirmPassword" class="form-label fw-bold">Detail Information</label>
             <!-- Editor -->
             <div id="editor-container rounded-3">
-                <textarea name="information" id="editor" required><?php echo htmlspecialchars_decode($ProductInfo) ?? $informationErr = "Error" ?></textarea>
+                <textarea name="information" id="editor"><?php echo htmlspecialchars_decode($ProductInfo) ?? $informationErr = "Error" ?></textarea>
             </div>
             <div class="text-danger" style="font-size: 0.8rem;">
                 <?php echo $informationErr ?? ''; ?>
@@ -148,6 +152,11 @@ if (empty($data["data"]["resultError"])) {
         $('select#selectCate').change(function() {
             let value = $(this).val().trim();
             $('#category').val(value);
+        })
+
+        $('select#selectUnit').change(function() {
+            let value = $(this).val().trim();
+            $('#unit').val(value);
         })
     })
 

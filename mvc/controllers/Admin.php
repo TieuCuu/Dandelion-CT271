@@ -43,10 +43,12 @@ class Admin extends Controller
 
         $row = json_decode($this->ProductModel->GetProductByID($productID));
         $categoryRows = $this->ProductModel->GetRows("SELECT CATEGORYID, CATEGORYNAME FROM CATEGORIES");
+        $unitRows =  $this->ProductModel->GetRows("SELECT UNITID, UNITNAME FROM UNITS");
 
         $data = [
             'row' => '',
             'categoryRows' => $categoryRows,
+            'unitRows' => $unitRows,
             'resultError' => ''
         ];
 

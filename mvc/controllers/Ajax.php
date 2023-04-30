@@ -191,11 +191,13 @@ class Ajax extends Controller
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
 
 
-            if (isset($_POST["name"]) && isset($_POST["price"]) && isset($_POST["category"]) && isset($_POST["quantity"]) && isset($_POST["desc"]) && isset($_POST["information"])) {
+            if (isset($_POST["name"]) && isset($_POST["price"]) && isset($_POST["weight"]) && isset($_POST["unit"]) && isset($_POST["category"]) && isset($_POST["quantity"]) && isset($_POST["desc"]) && isset($_POST["information"])) {
 
                 //set default value in database
                 $name = $row[0]->ProductName;
                 $price = $row[0]->ProductPrice;
+                $weight = $row[0]->ProductWeight;
+                $unit = $row[0]->UnitID;
                 $category = $row[0]->CategoryID;
                 $quantity = $row[0]->ProductQuantity;
                 $desc = $row[0]->ProductShortDesc;
@@ -214,7 +216,15 @@ class Ajax extends Controller
                 }
 
                 if (!empty($_POST["price"])) {
-                    $price = $_POST["price"];
+                    $price = floatval($_POST["price"]);
+                }
+
+                if (!empty($_POST["weight"])) {
+                    $weight = intval($_POST["weight"]);
+                }
+
+                if (!empty($_POST["unit"])) {
+                    $unit = $_POST["unit"];
                 }
 
                 if (!empty($_POST["category"])) {
@@ -240,6 +250,8 @@ class Ajax extends Controller
                     } else {
                         array_push($errors, showMessage("error", "Detail Information field at least 500 characters long!"));
                     }
+                } else {
+                    array_push($errors, showMessage("error", "Please fill into description fields"));
                 }
 
 
@@ -291,11 +303,13 @@ class Ajax extends Controller
                 $editResult = $this->ProductModel->EditProduct("
                     UPDATE PRODUCTS SET PRODUCTNAME = ?, 
                                         PRODUCTPRICE = ?, 
+                                        PRODUCTWEIGHT = ?,
+                                        UNITID = ?,
                                         CATEGORYID = ?, 
                                         PRODUCTQUANTITY = ?, 
                                         PRODUCTSHORTDESC = ?, 
                                         PRODUCTINFO = ?, 
-                                        PRODUCTIMG = ? WHERE PRODUCTID = ?", [$name, $price, $category, $quantity, $desc, $info, $img, $productID]);
+                                        PRODUCTIMG = ? WHERE PRODUCTID = ?", [$name, $price, $weight, $unit, $category, $quantity, $desc, $info, $img, $productID]);
                 if ($editResult) {
                     echo stackMessageWrapper([showMessage("success", "Product updated successfully!")]);
                 } else {
