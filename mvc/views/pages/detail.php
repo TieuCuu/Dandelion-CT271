@@ -56,19 +56,29 @@
                 <div class="col-7">
                     <div class="product__detail-info">
                         <h1 class="product__detail-title mb-0"><?php echo htmlspecialchars($data["data"][0]->ProductName); ?></h1>
-                        <div class="d-flex align-items-center">
-                            <div class="product__rating-block pe-3 py-3">
-                                <div class="product__rating-icon">
-                                    <i class="fa-regular fa-star product__rating--active"></i>
-                                    <i class="fa-regular fa-star product__rating--active"></i>
-                                    <i class="fa-regular fa-star product__rating--active"></i>
-                                    <i class="fa-regular fa-star product__rating--active"></i>
-                                    <i class="fa-regular fa-star"></i>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="product__rating-block pe-3 py-3">
+                                    <div class="product__rating-icon">
+                                        <i class="fa-regular fa-star product__rating--active"></i>
+                                        <i class="fa-regular fa-star product__rating--active"></i>
+                                        <i class="fa-regular fa-star product__rating--active"></i>
+                                        <i class="fa-regular fa-star product__rating--active"></i>
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
                                 </div>
+                                <div class="product-review border-start border-end px-3 py-1">145 Reviews</div>
+                                <div class="product-sold p-3">289 Sold</div>
                             </div>
-                            <div class="product-review border-start border-end px-3 py-1">145 Reviews</div>
-                            <div class="product-sold p-3">289 Sold</div>
+
+                            <div class="me-2 recommend-heart user-select-none" style="position: unset !important; cursor: pointer;">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: rgba(0, 0, 0, 0.5); height: 24px; width: 24px; stroke: #f9dfe4; stroke-width: 2; overflow: visible;">
+                                    <path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z">
+                                    </path>
+                                </svg>
+                            </div>
                         </div>
+
 
                         <p class="product__detail-desc">
                             <?php echo htmlspecialchars_decode(stripslashes($data["data"][0]->ProductShortDesc)) ?>
@@ -87,7 +97,7 @@
                                 <div><?php echo htmlspecialchars($data["data"][0]->ProductWeight) . " " . htmlspecialchars($data["data"][0]->UnitName) ?></div>
                             </div>
                             <div class="d-flex align-items-center mb-4">
-                                <h4 class="m-0 me-3">Transport:</h4>
+                                <h4 class="m-0 me-3">Shipping:</h4>
                                 <form action="" class="row g-3 align-items-center">
                                     <div class="col-auto">
                                         <select id="province" name="provinces" class="form-select form-select-sm " required="">
@@ -111,8 +121,9 @@
                             <div class="d-flex align-items-center mb-4">
                                 <h4 class="m-0 me-3">Quantity:</h4>
                                 <input name="quantity" class="shadow-none" type="number" value="1" min="1" max="<?php echo htmlspecialchars($data["data"][0]->ProductQuantity); ?>" <?php if ($data["data"][0]->ProductQuantity == 0) echo 'disabled' ?> step="1" />
+                                <span class="ms-3 text-muted" style="font-size: 0.875rem;"><?php echo htmlspecialchars($data["data"][0]->ProductQuantity) ?> pieces available</span>
                             </div>
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center mb-3">
                                 <button class="btn dark-green-btn dark-green-btn--lg dark-green-btn--option shadow-none rounded-1 me-3">
                                     <i class="fa-solid fa-cart-plus me-2"></i>
                                     <span>
@@ -365,3 +376,4 @@
 </script>
 
 <script src="<?php echo BASE_URL_PATH . "assets/js/ProvinceAPI.js" ?>"></script>
+<script src="<?php echo BASE_URL_PATH . "assets/js/base.js" ?>"></script>

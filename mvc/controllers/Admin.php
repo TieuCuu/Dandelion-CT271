@@ -107,7 +107,7 @@ class Admin extends Controller
             }
 
             if (isset($_POST["weight"]) && !empty($_POST["weight"])) {
-                if ($_POST["weight"] >= 0) {
+                if ($_POST["weight"] > 0) {
                     $weight = intval($_POST["weight"]);
                 } else {
                     $weightErr .= 'Invalid Weight!';
@@ -216,8 +216,6 @@ class Admin extends Controller
                     $errors['infoErr'] = $infoErr;
                 }
             }
-
-            var_dump($weight, $unit);
 
             if (!array_filter($errors) && !$hasErrors) {
                 //echo json_encode('thuc hien chen');

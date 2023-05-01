@@ -204,41 +204,74 @@ class Ajax extends Controller
                 $info = $row[0]->ProductInfo;
                 $img = $row[0]->ProductImg;
 
+
                 $errors = [];
+
+                //state if value change
+                $state = false;
 
 
                 if (!empty($_POST["name"])) {
                     if (strlen($_POST["name"]) >= 25) {
-                        $name = $_POST["name"];
+                        if ($name != $_POST["name"]) {
+                            $name = $_POST["name"];
+                            $state = true;
+                        }
                     } else {
                         array_push($errors, showMessage("error", "Name field at least 25 characters long!"));
                     }
                 }
 
                 if (!empty($_POST["price"])) {
-                    $price = floatval($_POST["price"]);
+                    if ($_POST["price"] >= 0) {
+                        if ($price != $_POST["price"]) {
+                            $price = floatval($_POST["price"]);
+                            $state = true;
+                        }
+                    } else {
+                        array_push($errors, showMessage("error", "Invalid Price!"));
+                    }
                 }
 
                 if (!empty($_POST["weight"])) {
-                    $weight = intval($_POST["weight"]);
+                    if ($_POST["weight"] > 0) {
+                        if ($weight != $_POST["weight"]) {
+                            $weight = intval($_POST["weight"]);
+                            $state = true;
+                        }
+                    } else {
+                        array_push($errors, showMessage("error", "Invalid Weight!"));
+                    }
                 }
 
                 if (!empty($_POST["unit"])) {
-                    $unit = $_POST["unit"];
+                    if ($unit != $_POST["unit"]) {
+                        $unit = $_POST["unit"];
+                        $state = true;
+                    }
                 }
 
                 if (!empty($_POST["category"])) {
-                    $category = ucfirst($_POST["category"]);
+                    if ($category != $_POST["category"]) {
+                        $category = ucfirst($_POST["category"]);
+                        $state = true;
+                    }
                 }
 
                 //quantity can be 0
                 if (!empty($_POST["quantity"] || $_POST["quantity"] == 0)) {
-                    $quantity = $_POST["quantity"];
+                    if ($quantity != $_POST["quantity"]) {
+                        $quantity = $_POST["quantity"];
+                        $state = true;
+                    }
                 }
 
                 if (!empty($_POST["desc"])) {
                     if (strlen($_POST["desc"]) >= 100) {
-                        $desc = $_POST["desc"];
+                        if ($desc != $_POST["desc"]) {
+                            $desc = $_POST["desc"];
+                            $state = true;
+                        }
                     } else {
                         array_push($errors, showMessage("error", "Description field at least 100 characters long!"));
                     }
@@ -246,7 +279,10 @@ class Ajax extends Controller
 
                 if (!empty($_POST["information"])) {
                     if (strlen($_POST["information"]) >= 500) {
-                        $info = $_POST["information"];
+                        if ($info != $_POST["information"]) {
+                            $info = $_POST["information"];
+                            $state = true;
+                        }
                     } else {
                         array_push($errors, showMessage("error", "Detail Information field at least 500 characters long!"));
                     }
@@ -292,33 +328,43 @@ class Ajax extends Controller
                     if ($hasErrors) {
                         array_push($errors, showMessage("error", "Sorry, your file was not uploaded."));
                     } else {
-                        if (move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $targetFile)) {
-                            $img = basename($_FILES["fileUpload"]["name"]);
-                        } else {
-                            array_push($errors, showMessage("error", "Sorry, there was an error uploading your file."));
+                        if ($img != basename($_FILES["fileUpload"]["name"])) {
+                            if (move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $targetFile)) {
+                                $img = basename($_FILES["fileUpload"]["name"]);
+                                $state = true;
+                            } else {
+                                array_push($errors, showMessage("error", "Sorry, there was an error uploading your file."));
+                            }
                         }
                     }
                 }
 
-                $editResult = $this->ProductModel->EditProduct("
-                    UPDATE PRODUCTS SET PRODUCTNAME = ?, 
-                                        PRODUCTPRICE = ?, 
-                                        PRODUCTWEIGHT = ?,
-                                        UNITID = ?,
-                                        CATEGORYID = ?, 
-                                        PRODUCTQUANTITY = ?, 
-                                        PRODUCTSHORTDESC = ?, 
-                                        PRODUCTINFO = ?, 
-                                        PRODUCTIMG = ? WHERE PRODUCTID = ?", [$name, $price, $weight, $unit, $category, $quantity, $desc, $info, $img, $productID]);
-                if ($editResult) {
-                    echo stackMessageWrapper([showMessage("success", "Product updated successfully!")]);
-                } else {
-                    if (empty($errors)) {
+                //no error
+                if (empty($errors)) {
+
+                    //state = false mean nothing change/different
+                    if (!$state) {
                         echo stackMessageWrapper([showMessage("info", "Nothing was changed. Please make some changes and try again.")]);
                     } else {
-                        array_push($errors, showMessage("error", "Failed to update the record. Please try again later."));
-                        echo stackMessageWrapper($errors);
+                        $editResult = $this->ProductModel->EditProduct("
+                        UPDATE PRODUCTS SET PRODUCTNAME = ?, 
+                                            PRODUCTPRICE = ?, 
+                                            PRODUCTWEIGHT = ?,
+                                            UNITID = ?,
+                                            CATEGORYID = ?, 
+                                            PRODUCTQUANTITY = ?, 
+                                            PRODUCTSHORTDESC = ?, 
+                                            PRODUCTINFO = ?, 
+                                            PRODUCTIMG = ? WHERE PRODUCTID = ?", [$name, $price, $weight, $unit, $category, $quantity, $desc, $info, $img, $productID]);
+                        if ($editResult) {
+                            echo stackMessageWrapper([showMessage("success", "Product updated successfully!")]);
+                        } else {
+                            echo stackMessageWrapper([showMessage("error", "Failed to update the record. Please try again later!")]);
+                        }
                     }
+                } else {
+                    array_push($errors, showMessage("error", "Failed to update the record. Please try again later!"));
+                    echo stackMessageWrapper($errors);
                 }
             }
         }
