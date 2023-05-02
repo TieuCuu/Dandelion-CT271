@@ -44,6 +44,28 @@ class UserModel extends ConnectDB
         return json_encode($result);
     }
 
+    public function UpdateDB($query, $params = [])
+    {
+        try {
+            $stmt = $this->PDO->prepare($query);
+            $stmt->execute($params);
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function GetRow($query, $params = [])
+    {
+        try {
+            $stmt = $this->PDO->prepare($query);
+            $stmt->execute($params);
+
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function signin($username, $password)
     {
 

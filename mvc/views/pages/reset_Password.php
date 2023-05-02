@@ -23,7 +23,7 @@
                     <!-- Sign in -->
                     <div class="shared-form">
                         <h2 class="mb-5 tilt-font text-center">Forgot Password?</h2>
-                        <form action="<?php echo BASE_URL_PATH . "ForgotPW/PasswordReset" ?>" id="forgot_pw" class="row g-3" method="POST">
+                        <form action="" id="forgot_pw" class="row g-3" method="POST">
                             <div class="col-md-12">
                                 <p class="mb-0">Enter the email address you used when you joined and we’ll send you
                                     instructions
@@ -39,7 +39,7 @@
                                 <input type="email" name="forget" class="form-control form-control-lg input-color" required>
                             </div>
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-dark w-100 mt-3">Send Reset
+                                <button type="submit" name="btnReset" class="btn btn-dark w-100 mt-3">Send Reset
                                     Instructions</button>
                             </div>
                         </form>
