@@ -22,27 +22,14 @@
                 <section class="shared-content d-flex justify-content-center align-items-center h-100">
                     <!-- Sign in -->
                     <div class="shared-form">
-                        <h2 class="mb-5 tilt-font text-center">Forgot Password?</h2>
-                        <form action="<?php echo BASE_URL_PATH . "ForgotPW/PasswordReset" ?>" id="forgot_pw" class="row g-3" method="POST">
+                        <h2 class="mb-3 tilt-font text-center"><i class="fa-solid fa-circle-check me-2" style="color: #209e71;"></i>Password Reset Link Sent</h2>
+                        <div>
                             <div class="col-md-12">
-                                <p class="mb-0">Enter the email address you used when you joined and we’ll send you
-                                    instructions
-                                    to reset your password.</p>
+                                <p class="mb-0">If your email matches an existing account we will send a password reset email within a few minutes. If you have not received an email check your spam folder or contact
+                                    <a href="#" class="text-decoration-none">Our Support</a>.
+                                </p>
                             </div>
-                            <div class="col-md-12">
-                                <p class="mb-0">For security reasons, we do NOT store your password. So rest assured
-                                    that we will
-                                    never send your password via email.</p>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="forget" class="form-label fw-bold">Email Address</label>
-                                <input type="email" name="forget" class="form-control form-control-lg input-color" required>
-                            </div>
-                            <div class="col-md-12">
-                                <button type="submit" class="btn btn-dark w-100 mt-3">Send Reset
-                                    Instructions</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </section>
             </div>
