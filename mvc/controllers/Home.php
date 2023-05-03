@@ -2,7 +2,7 @@
 class Home extends Controller
 {
 
-    //public $ExampleModel; nếu các function đều cần gọi model thì tạo biến global
+    //public $ExampleModel; If all functions need to call the model, create a global variable
     public $ProductModel;
 
     function __construct()

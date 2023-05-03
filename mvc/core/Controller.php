@@ -1,7 +1,7 @@
 <?php
-class Controller //trung gian tương tự bridge, nhiệm vụ gọi model và view tương ứng
+class Controller //intermediary like bridge, calling the corresponding of model & view
 {
-    //gọi model tương ứng
+    //Call the corresponding model
     public function model($model)
     {
         if (file_exists("../mvc/models/" . $model . ".php")) {
@@ -10,7 +10,7 @@ class Controller //trung gian tương tự bridge, nhiệm vụ gọi model và 
         }
     }
 
-    //gọi view tương ứng
+    //Call the corresponding view
     public function view($view, $data = [])
     {
         if (file_exists("../mvc/views/" . $view . ".php")) {

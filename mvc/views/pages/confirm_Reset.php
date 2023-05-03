@@ -67,6 +67,13 @@ if (isset($data["data"]["isSuccess"])) {
                             <i class="fa-solid fa-circle-check me-2" style="color: #209e71;"></i>
                             Password Reset Successfully
                         </h2>
+                        <?php if ($isSuccess) { ?>
+                            <script>
+                                window.setTimeout(function() {
+                                    window.location = "http://ct271.test/Signin";
+                                }, 3000);
+                            </script>
+                        <?php } ?>
                     </div>
                     <div class="shared-form text-center <?php if (isset($data["data"]["isSuccess"]) && !$isSuccess) echo 'd-block';
                                                         else echo 'd-none'; ?>">
