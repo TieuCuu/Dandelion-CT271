@@ -20,7 +20,7 @@
                     </a>
                 </section>
                 <section class="shared-content d-flex justify-content-center align-items-center h-100">
-                    <!-- Sign in -->
+
                     <div class="shared-form">
                         <h2 class="mb-3 tilt-font text-center"><i class="fa-solid fa-circle-check me-2" style="color: #209e71;"></i>Password Reset Link Sent</h2>
                         <div>

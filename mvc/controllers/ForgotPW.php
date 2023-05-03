@@ -15,17 +15,15 @@ class ForgotPW extends Controller
     public function SayHi()
     {
         if (isset($_POST["forget"]) && isset($_POST["btnReset"])) {
+
             $userEmail = $_POST['forget'];
 
             $rowCount = $this->UserModel->GetRow("SELECT * FROM Users WHERE UserEmail = ?", [$userEmail]);
 
-            // var_dump($rowCount["UserFirstName"]);
             if ($rowCount) {
+
                 $token = md5($userEmail) . rand(10, 9999);
                 $userName = ucfirst($rowCount["UserFirstName"]);
-                //var_dump($userName);
-
-                //echo $token . "<br>";
 
                 $expFormat = mktime(
                     date("H"),
@@ -35,16 +33,17 @@ class ForgotPW extends Controller
                     date("d"),
                     date("Y")
                 );
-                // echo $expFormat;
 
                 $expDate = date("Y-m-d H:i:s", $expFormat);
-                //echo $expDate;
+
                 $this->UserModel->UpdateDB("UPDATE Users SET reset_link_token = ?, exp_date = ? WHERE UserEmail = ?", [$token, $expDate, $userEmail]);
                 $link = "ct271.test/ForgotPW/PasswordReset/" . rtrim(strtr(base64_encode($userEmail), '+/', '-_'), '=') . "/$token";
-                //echo $link;
+
 
                 $mail = new PHPMailer(true);
+
                 try {
+
                     $mail->isSMTP();
                     // $mail->SMTPDebug  = SMTP::DEBUG_SERVER;
                     $mail->SMTPAuth   = true;
@@ -55,7 +54,7 @@ class ForgotPW extends Controller
                     $mail->Password   = $_ENV['PHPMAIL_PASS'];
 
                     $mail->setFrom($_ENV['PHPMAIL_NAME'], 'Dandelion');
-                    $mail->addAddress('zzsakura2020@gmail.com');
+                    $mail->addAddress($userEmail);
 
 
                     $mail->WordWrap = 50;
@@ -78,7 +77,7 @@ class ForgotPW extends Controller
                     </head>  
                     <body>
                         <table class="body-wrap"
-                            style="box-sizing: border-box; font-size: 14px; width: 100%; background-color: #f6f6f6; margin: 0;"
+                            style="box-sizing: border-box; font-size: 14px; width: 100%; background-color: #f6f6f6; color: #222; margin: 0;"
                             bgcolor="#f6f6f6">
                             <tbody>
                                 <tr style=" box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -127,7 +126,7 @@ class ForgotPW extends Controller
                                                                             valign="top">
                                                                             <div style="text-align: center;">
                                                                                 <a href="' . $link . '" class="btn-primary" itemprop="url"
-                                                                                    style=" box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #f06292; margin: 0; border-color: #f06292; border-style: solid; border-width: 8px 16px;">Reset
+                                                                                    style=" box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #568577; margin: 0; border-color: #568577; border-style: solid; border-width: 8px 16px;">Reset
                                                                                     your password</a>
                                                                             </div>
                                                                         </td>
@@ -137,7 +136,7 @@ class ForgotPW extends Controller
                                                                             style=" box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                                                             valign="top">
                                                                             <b>Dandelion,</b>
-                                                                            <p>Support Team</p>
+                                                                            <p style="margin-top: 3px;">Support Team</p>
                                                                         </td>
                                                                     </tr>
                     
@@ -150,7 +149,7 @@ class ForgotPW extends Controller
                                                                                     &copy; 2023 Dandelion.
                                                                                 </div>
                                                                                 <div>
-                                                                                    Designed by Phat Ly.
+                                                                                    Designed by <b>Phat Ly</b>.
                                                                                 </div>
                                                                             </div>
                                                                         </td>
@@ -170,13 +169,18 @@ class ForgotPW extends Controller
                     </html>';
 
                     $mail->send();
-                    //echo 'Message has been sent';
+
                     $this->view("master2", ["page" => "confirm_Sending"]);
                 } catch (Exception $e) {
-                    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+
+                    $this->view("master2", ["page" => "reset_Password"]);
+                    echo stackMessageWrapper([showMessage("error", "Message could not be sent.")]);
+                    echo '<script>console.log("Use SMTP::DEBUG_SERVER to see detailed error messages! \n' . $mail->ErrorInfo . '");</script>';
+                    // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
                 }
             } else {
-                echo "not ok";
+                //If the user is not found, skip it
+                $this->view("master2", ["page" => "confirm_Sending"]);
             }
         } else {
             $this->view("master2", ["page" => "reset_Password"]);
@@ -185,16 +189,11 @@ class ForgotPW extends Controller
 
     public function PasswordReset($email, $token)
     {
-        // var_dump(base64_decode(strtr($email, '-_', '+/')), $token);
         $email = base64_decode(strtr($email, '-_', '+/'));
 
-
         $currentDate = date("Y-m-d H:i:s");
-        // var_dump($currentDate);
 
         $result = $this->UserModel->getRow("SELECT * FROM Users WHERE `reset_link_token`= ? AND  `UserEmail` = ?", [$token, $email]);
-
-        // var_dump($result["UserPassword"]);
 
         $data = [
             "available" => false,
@@ -203,9 +202,10 @@ class ForgotPW extends Controller
         ];
 
         if ($result) {
-            echo "ok";
-            //true: ok - false: expired
+
+            //true: link with time available - false: time expired
             $available = $result["exp_date"] >= $currentDate;
+
             if ($available) {
                 if (isset($_POST["new_pass"]) && isset($_POST["confirm_pass"]) && isset($_POST["btnConfirm"])) {
 
@@ -232,17 +232,10 @@ class ForgotPW extends Controller
 
                     //make sure that errors are empty
                     if ($available && empty($data["passwordError"]) && empty($data["confirmPasswordError"])) {
-                        echo "ok cho đổi pass";
+
                         $newPW = password_hash($newPW, PASSWORD_DEFAULT);
-                        // if ($this->UserModel->UpdateDB("UPDATE Users SET UserPassword = ?, reset_link_token = NULL, exp_date = NULL WHERE UserEmail = ?", [$pw, $email])) {
-                        //     $data["isSuccess"] = true;
-                        // } else {
-                        //     $data["isSuccess"] = false;
-                        // }
-                        var_dump($newPW);
 
                         $result = $this->UserModel->UpdateDB("UPDATE Users SET UserPassword = ?, reset_link_token = NULL, exp_date = NULL WHERE UserEmail = ?", [$newPW, $email]);
-                        // var_dump($result);
 
                         if ($result == 1) {
                             $data["isSuccess"] = true;
@@ -251,14 +244,15 @@ class ForgotPW extends Controller
                         }
                     }
                 }
+            } else {
+                $available = false;
             }
         } else {
-            echo "not ok";
             $available = false;
         }
 
         $data["available"] = $available;
-        // var_dump($data);
+
         $this->view("master2", ["page" => "confirm_Reset", "data" => $data]);
     }
 }

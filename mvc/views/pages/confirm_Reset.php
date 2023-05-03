@@ -41,10 +41,16 @@ if (isset($data["data"]["isSuccess"])) {
                                 <div class="col-md-12">
                                     <label for="new_pass" class="form-label fw-bold">New Password*</label>
                                     <input type="password" name="new_pass" class="form-control form-control-lg input-color" required>
+                                    <div class="text-danger" style="font-size: 0.8rem;">
+                                        <?php echo $data["data"]["passwordError"] ?? "" ?>
+                                    </div>
                                 </div>
                                 <div class="col-md-12">
                                     <label for="confirm_pass" class="form-label fw-bold">New Password Confirmation*</label>
                                     <input type="password" name="confirm_pass" class="form-control form-control-lg input-color" required>
+                                    <div class="text-danger" style="font-size: 0.8rem;">
+                                        <?php echo $data["data"]["confirmPasswordError"] ?? "" ?>
+                                    </div>
                                 </div>
                                 <div class="col-md-12">
                                     <button type="submit" name="btnConfirm" class="btn btn-dark w-100 mt-3">Confirm Reset Password</button>
