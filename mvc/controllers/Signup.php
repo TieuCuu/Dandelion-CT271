@@ -86,7 +86,7 @@ class Signup extends Controller
             //Validate password on length, numeric values
             if (empty($data['password'])) {
                 $data['passwordError'] = 'Please enter password.';
-            } elseif (strlen($data['password']) < 8) {
+            } else if (strlen($data['password']) < 8) {
                 $data['passwordError'] = 'Password must be at least 8 characters';
             } else if (!preg_match($passwordValidation, $data['password'])) {
                 $data['passwordError'] = 'Password must be have at least one uppercase letter, one lowercase letter, one number and one special character.';

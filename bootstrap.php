@@ -1,8 +1,7 @@
 <?php
-
+date_default_timezone_set("Asia/Ho_Chi_Minh");
 define('BASE_URL_PATH', 'http://ct271.test/');
 
-// Chuyển hướng đến một trang khác
 function redirect($location)
 {
     header('Location: ' . BASE_URL_PATH . $location);

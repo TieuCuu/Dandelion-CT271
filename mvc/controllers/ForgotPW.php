@@ -27,7 +27,6 @@ class ForgotPW extends Controller
 
                 //echo $token . "<br>";
 
-                date_default_timezone_set("Asia/Ho_Chi_Minh");
                 $expFormat = mktime(
                     date("H"),
                     date("i") + 30,
@@ -47,7 +46,7 @@ class ForgotPW extends Controller
                 $mail = new PHPMailer(true);
                 try {
                     $mail->isSMTP();
-                    $mail->SMTPDebug  = SMTP::DEBUG_SERVER;
+                    // $mail->SMTPDebug  = SMTP::DEBUG_SERVER;
                     $mail->SMTPAuth   = true;
                     $mail->SMTPSecure = 'ssl';
                     $mail->Host       = 'smtp.gmail.com';
@@ -170,7 +169,7 @@ class ForgotPW extends Controller
                     </body>
                     </html>';
 
-                    // $mail->send();
+                    $mail->send();
                     //echo 'Message has been sent';
                     $this->view("master2", ["page" => "confirm_Sending"]);
                 } catch (Exception $e) {
@@ -186,6 +185,80 @@ class ForgotPW extends Controller
 
     public function PasswordReset($email, $token)
     {
-        var_dump(base64_decode(strtr($email, '-_', '+/')), $token);
+        // var_dump(base64_decode(strtr($email, '-_', '+/')), $token);
+        $email = base64_decode(strtr($email, '-_', '+/'));
+
+
+        $currentDate = date("Y-m-d H:i:s");
+        // var_dump($currentDate);
+
+        $result = $this->UserModel->getRow("SELECT * FROM Users WHERE `reset_link_token`= ? AND  `UserEmail` = ?", [$token, $email]);
+
+        // var_dump($result["UserPassword"]);
+
+        $data = [
+            "available" => false,
+            "passwordError" => "",
+            "confirmPasswordError" => "",
+        ];
+
+        if ($result) {
+            echo "ok";
+            //true: ok - false: expired
+            $available = $result["exp_date"] >= $currentDate;
+            if ($available) {
+                if (isset($_POST["new_pass"]) && isset($_POST["confirm_pass"]) && isset($_POST["btnConfirm"])) {
+
+                    $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+
+                    $newPW = $_POST["new_pass"];
+                    $confirmPW = $_POST["confirm_pass"];
+
+                    $passwordValidation = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/";
+
+                    if (empty($newPW)) {
+                        $data["passwordError"] = "Please enter password.";
+                    } else if (strlen($newPW) < 8) {
+                        $data["passwordError"] = "Password must be at least 8 characters";
+                    } else if (!preg_match($passwordValidation, $newPW)) {
+                        $data["passwordError"] = "Password must be have at least one uppercase letter, one lowercase letter, one number and one special character.";
+                    }
+
+                    if (empty($confirmPW)) {
+                        $data["confirmPasswordError"] = "Please enter password.";
+                    } else if ($newPW !== $confirmPW) {
+                        $data["confirmPasswordError"] = "Passwords do not match, please try again.";
+                    }
+
+                    //make sure that errors are empty
+                    if ($available && empty($data["passwordError"]) && empty($data["confirmPasswordError"])) {
+                        echo "ok cho đổi pass";
+                        $newPW = password_hash($newPW, PASSWORD_DEFAULT);
+                        // if ($this->UserModel->UpdateDB("UPDATE Users SET UserPassword = ?, reset_link_token = NULL, exp_date = NULL WHERE UserEmail = ?", [$pw, $email])) {
+                        //     $data["isSuccess"] = true;
+                        // } else {
+                        //     $data["isSuccess"] = false;
+                        // }
+                        var_dump($newPW);
+
+                        $result = $this->UserModel->UpdateDB("UPDATE Users SET UserPassword = ?, reset_link_token = NULL, exp_date = NULL WHERE UserEmail = ?", [$newPW, $email]);
+                        // var_dump($result);
+
+                        if ($result == 1) {
+                            $data["isSuccess"] = true;
+                        } else {
+                            $data["isSuccess"] = false;
+                        }
+                    }
+                }
+            }
+        } else {
+            echo "not ok";
+            $available = false;
+        }
+
+        $data["available"] = $available;
+        // var_dump($data);
+        $this->view("master2", ["page" => "confirm_Reset", "data" => $data]);
     }
 }

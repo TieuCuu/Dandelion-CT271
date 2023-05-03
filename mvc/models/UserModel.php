@@ -49,6 +49,7 @@ class UserModel extends ConnectDB
         try {
             $stmt = $this->PDO->prepare($query);
             $stmt->execute($params);
+            return $stmt->rowCount();
         } catch (PDOException $e) {
             throw new Exception($e->getMessage());
         }
